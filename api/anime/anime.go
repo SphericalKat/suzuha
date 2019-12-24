@@ -15,11 +15,27 @@ func Index(ctx *fasthttp.RequestCtx) {
 
 	json, err := config.Cache.Get(cacheKey)
 	if err != nil {
-		id, _ := strconv.Atoi(idStr)
-		json, _ = jettison.Marshal(anime.ScrapeAnime(id))
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			ctx.SetStatusCode(404)
+			fmt.Println(err)
+			return
+		}
+		anime, err := anime.ScrapeAnime(id)
+		if err != nil {
+			ctx.SetStatusCode(404)
+			fmt.Println(err)
+			return
+		}
+		json, err = jettison.Marshal(anime)
+		if err != nil {
+			ctx.SetStatusCode(404)
+			fmt.Println(err)
+			return
+		}
 		config.Cache.Set(cacheKey, json)
 	}
 
 	ctx.SetContentTypeBytes(config.JsonContentType)
-	ctx.Write(json)
+	_, _ = ctx.Write(json)
 }

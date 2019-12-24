@@ -112,7 +112,7 @@ func cleanYtUrl(url string) string {
 var ytLinkRe = regexp.MustCompile(`https?://(?:www\.)?youtube\.com/embed/([\w-]+).*`)
 var InfoLinkRe = regexp.MustCompile(`/(\w+)/(?:\w+/)?(\d+)/.*`)
 
-func ScrapeAnime(id int) Anime {
+func ScrapeAnime(id int) (Anime, error) {
 	anime := Anime{MalId: &id}
 
 	coll := colly.NewCollector()
@@ -345,6 +345,6 @@ func ScrapeAnime(id int) Anime {
 		}
 	})
 
-	coll.Visit(fmt.Sprintf("https://myanimelist.net/anime/%d", id))
-	return anime
+	err := coll.Visit(fmt.Sprintf("https://myanimelist.net/anime/%d", id))
+	return anime, err
 }
