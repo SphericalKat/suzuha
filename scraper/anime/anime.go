@@ -329,17 +329,19 @@ func ScrapeAnime(id int) Anime {
 		} else {
 			fmt.Println(err)
 		}
-		tmpTo, err := time.Parse("Jan _2, 2006", airedParts[1])
-		if err == nil {
-			anime.Aired.To = &tmpTo
-			tmpDay := anime.Aired.To.Day()
-			anime.Aired.Prop.To.Day = &tmpDay
-			tmpMonth := int(anime.Aired.To.Month())
-			anime.Aired.Prop.To.Month = &tmpMonth
-			tmpYear := anime.Aired.To.Year()
-			anime.Aired.Prop.To.Year = &tmpYear
-		} else {
-			fmt.Println(err)
+		if len(airedParts) == 2 {
+			tmpTo, err := time.Parse("Jan _2, 2006", airedParts[1])
+			if err == nil {
+				anime.Aired.To = &tmpTo
+				tmpDay := anime.Aired.To.Day()
+				anime.Aired.Prop.To.Day = &tmpDay
+				tmpMonth := int(anime.Aired.To.Month())
+				anime.Aired.Prop.To.Month = &tmpMonth
+				tmpYear := anime.Aired.To.Year()
+				anime.Aired.Prop.To.Year = &tmpYear
+			} else {
+				fmt.Println(err)
+			}
 		}
 	})
 
