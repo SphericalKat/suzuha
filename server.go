@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/deletescape/toraberu/api/anime"
+	"github.com/deletescape/toraberu/api/search"
 	"github.com/deletescape/toraberu/config"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
@@ -45,6 +46,7 @@ func main() {
 
 	router.GET("/", Index)
 	router.GET("/anime/:id", anime.Index)
+	router.GET("/search/autocomplete", search.Autocomplete)
 
-	log.Fatal(fasthttp.ListenAndServe(":8080", router.Handler))
+	log.Fatal(fasthttp.ListenAndServe(":8081", router.Handler))
 }
