@@ -45,5 +45,5 @@ func Autocomplete(ctx *fasthttp.RequestCtx) {
 		}
 	}
 	ctx.Write(data)
-	ctx.SetContentTypeBytes(config.JsonContentType)
+	ctx.SetContentTypeBytes(config.JSONContentType)
 }

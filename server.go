@@ -25,7 +25,7 @@ type IndexInfo struct {
 var indexInfo []byte
 
 func Index(ctx *fasthttp.RequestCtx) {
-	ctx.SetContentTypeBytes(config.JsonContentType)
+	ctx.SetContentTypeBytes(config.JSONContentType)
 	_, _ = ctx.Write(indexInfo)
 }
 

@@ -45,5 +45,5 @@ func Anime(ctx *fasthttp.RequestCtx) {
 		go config.Cache.Set(cacheKey, json)
 	}
 	ctx.Write(json)
-	ctx.SetContentTypeBytes(config.JsonContentType)
+	ctx.SetContentTypeBytes(config.JSONContentType)
 }

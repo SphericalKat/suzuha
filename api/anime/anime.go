@@ -2,6 +2,7 @@ package anime
 
 import (
 	"fmt"
+	"github.com/deletescape/toraberu/api/views"
 	"github.com/deletescape/toraberu/config"
 	"github.com/deletescape/toraberu/scraper/anime"
 	"github.com/valyala/fasthttp"
@@ -17,25 +18,26 @@ func Index(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			ctx.SetStatusCode(404)
-			fmt.Println(err)
+			views.Wrap(ctx, err)
 			return
 		}
-		anime, err := anime.ScrapeAnime(id)
+		a, err := anime.ScrapeAnime(id)
 		if err != nil {
-			ctx.SetStatusCode(404)
-			fmt.Println(err)
+			views.Wrap(ctx, err)
 			return
 		}
-		json, err = jettison.Marshal(anime)
+		json, err = jettison.Marshal(a)
 		if err != nil {
-			ctx.SetStatusCode(404)
-			fmt.Println(err)
+			views.Wrap(ctx, err)
 			return
 		}
-		config.Cache.Set(cacheKey, json)
+		err = config.Cache.Set(cacheKey, json)
+		if err != nil {
+			views.Wrap(ctx, err)
+			return
+		}
 	}
 
-	ctx.SetContentTypeBytes(config.JsonContentType)
+	ctx.SetContentTypeBytes(config.JSONContentType)
 	_, _ = ctx.Write(json)
 }
