@@ -47,6 +47,7 @@ func main() {
 	router.GET("/", Index)
 	router.GET("/anime/:id", anime.Index)
 	router.GET("/search/autocomplete", search.Autocomplete)
+	router.GET("/search/anime", search.Anime)
 
 	log.Fatal(fasthttp.ListenAndServe(":8081", router.Handler))
 }
