@@ -2,10 +2,11 @@ package search
 
 import (
 	"fmt"
-	"github.com/deletescape/toraberu/config"
-	"github.com/valyala/fasthttp"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/deletescape/toraberu/internal/config"
+	"github.com/valyala/fasthttp"
 )
 
 func Autocomplete(ctx *fasthttp.RequestCtx) {

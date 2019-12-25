@@ -4,23 +4,12 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/deletescape/toraberu/api/anime"
 	"github.com/deletescape/toraberu/api/search"
-	"github.com/deletescape/toraberu/config"
+	"github.com/deletescape/toraberu/internal/config"
+	"github.com/deletescape/toraberu/pkg/entities"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
 	"log"
 )
-
-type IndexInfo struct {
-	Author           string
-	Telegram         string
-	Version          string
-	ToraberuGo       string
-	Website          string
-	Docs             string
-	GitHub           string
-	ProductionApiUrl string `json:"PRODUCTION_API_URL"`
-	StatusUrl        string `json:"STATUS_URL"`
-}
 
 var indexInfo []byte
 
@@ -30,7 +19,7 @@ func Index(ctx *fasthttp.RequestCtx) {
 }
 
 func main() {
-	indexInfo, _ = jettison.Marshal(IndexInfo{
+	indexInfo, _ = jettison.Marshal(entities.IndexInfo{
 		Author:           "@deletescape",
 		Telegram:         "t.me/noneyet",
 		Version:          "0.0.1",
@@ -49,5 +38,6 @@ func main() {
 	router.GET("/search/autocomplete", search.Autocomplete)
 	router.GET("/search/anime", search.Anime)
 
+	log.Println("Starting toraberu")
 	log.Fatal(fasthttp.ListenAndServe(":8081", router.Handler))
 }

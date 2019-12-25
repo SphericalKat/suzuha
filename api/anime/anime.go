@@ -3,8 +3,8 @@ package anime
 import (
 	"fmt"
 	"github.com/deletescape/toraberu/api/views"
-	"github.com/deletescape/toraberu/config"
-	"github.com/deletescape/toraberu/scraper/anime"
+	"github.com/deletescape/toraberu/internal/config"
+	"github.com/deletescape/toraberu/pkg/scraper/anime"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
 	"strconv"

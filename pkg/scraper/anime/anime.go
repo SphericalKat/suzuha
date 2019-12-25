@@ -3,87 +3,13 @@ package anime
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/deletescape/toraberu/pkg/entities"
 	"github.com/gocolly/colly"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
-
-type Studio struct {
-	MalId int    `json:"mal_id"`
-	Type  string `json:"type"`
-	Name  string `json:"name"`
-	Url   string `json:"url"`
-}
-
-type Genre struct {
-	MalId int    `json:"mal_id"`
-	Type  string `json:"type"`
-	Name  string `json:"name"`
-	Url   string `json:"url"`
-}
-
-type Date struct {
-	Day   *int `json:"day"`
-	Month *int `json:"month"`
-	Year  *int `json:"year"`
-}
-
-type AiredProp struct {
-	From Date `json:"from"`
-	To   Date `json:"to"`
-}
-
-type Aired struct {
-	From   *time.Time `json:"from"`
-	To     *time.Time `json:"to"`
-	String string     `json:"string"`
-	Prop   AiredProp  `json:"prop"`
-}
-
-type RelatedItem struct {
-	MalId int    `json:"mal_id"`
-	Type  string `json:"type"`
-	Name  string `json:"name"`
-	Url   string `json:"url"`
-}
-
-type Anime struct {
-	Url           *string                  `json:"url"`
-	Type          *string                  `json:"type"`
-	TrailerUrl    *string                  `json:"trailer_url"`
-	Title         *string                  `json:"title"`
-	TitleEnglish  *string                  `json:"title_english"`
-	TitleJapanese *string                  `json:"title_japanese"`
-	TitleSynonyms []string                 `json:"title_synonyms"`
-	Synopsis      *string                  `json:"synopsis"`
-	MalId         *int                     `json:"mal_id"`
-	ImageUrl      *string                  `json:"image_url"`
-	Episodes      *int                     `json:"episodes"`
-	Broadcast     *string                  `json:"broadcast"`
-	Duration      *string                  `json:"duration"`
-	Favorites     *int                     `json:"favorites"`
-	Members       *int                     `json:"members"`
-	Popularity    *int                     `json:"popularity"`
-	Rank          *int                     `json:"rank"`
-	Score         *float64                 `json:"score"`
-	ScoredBy      *int                     `json:"scored_by"`
-	Rating        *string                  `json:"rating"`
-	Airing        bool                     `json:"airing"`
-	Aired         Aired                    `json:"aired"`
-	Background    *string                  `json:"background"`
-	EndingThemes  []string                 `json:"ending_themes"`
-	Genres        []Genre                  `json:"genres"`
-	Licensors     []Studio                 `json:"licensors"`
-	OpeningThemes []string                 `json:"opening_themes"`
-	Premiered     *string                  `json:"premiered"`
-	Producers     []Studio                 `json:"producers"`
-	Related       map[string][]RelatedItem `json:"related"`
-	Source        *string                  `json:"source"`
-	Status        *string                  `json:"status"`
-	Studios       []Studio                 `json:"studios"`
-}
 
 func getInfo(selection *goquery.Selection, info string) string {
 	it := selection.FilterFunction(func(i int, s *goquery.Selection) bool {
@@ -110,10 +36,10 @@ func cleanYtUrl(url string) string {
 }
 
 var ytLinkRe = regexp.MustCompile(`https?://(?:www\.)?youtube\.com/embed/([\w-]+).*`)
-var InfoLinkRe = regexp.MustCompile(`/(\w+)/(?:\w+/)?(\d+)/.*`)
+var infoLinkRe = regexp.MustCompile(`/(\w+)/(?:\w+/)?(\d+)/.*`)
 
-func ScrapeAnime(id int) (Anime, error) {
-	anime := Anime{MalId: &id}
+func ScrapeAnime(id int) (entities.Anime, error) {
+	anime := entities.Anime{MalId: &id}
 
 	coll := colly.NewCollector()
 
@@ -225,38 +151,38 @@ func ScrapeAnime(id int) (Anime, error) {
 		}
 		getInfoLinks(darkText, "Studios:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := InfoLinkRe.FindStringSubmatch(url)
+			match := infoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 
-				anime.Studios = append(anime.Studios, Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
+				anime.Studios = append(anime.Studios, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
 			}
 		})
 		getInfoLinks(darkText, "Licensors:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := InfoLinkRe.FindStringSubmatch(url)
+			match := infoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 
-				anime.Licensors = append(anime.Licensors, Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
+				anime.Licensors = append(anime.Licensors, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
 			}
 		})
 		getInfoLinks(darkText, "Producers:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := InfoLinkRe.FindStringSubmatch(url)
+			match := infoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 
-				anime.Producers = append(anime.Producers, Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
+				anime.Producers = append(anime.Producers, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
 			}
 		})
 		getInfoLinks(darkText, "Genres:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := InfoLinkRe.FindStringSubmatch(url)
+			match := infoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 
-				anime.Genres = append(anime.Genres, Genre{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
+				anime.Genres = append(anime.Genres, entities.Genre{MalId: studioId, Type: match[1], Name: s.Text(), Url: e.Request.AbsoluteURL(url)})
 			}
 		})
 		e.DOM.Find(".theme-songs.opnening .theme-song").Each(func(i int, s *goquery.Selection) {
@@ -273,16 +199,16 @@ func ScrapeAnime(id int) (Anime, error) {
 			}
 			anime.EndingThemes = append(anime.EndingThemes, text)
 		})
-		anime.Related = map[string][]RelatedItem{}
+		anime.Related = map[string][]entities.RelatedItem{}
 		e.DOM.Find(".anime_detail_related_anime tr").Each(func(i int, s *goquery.Selection) {
 			key := strings.TrimSuffix(s.Find("td").First().Text(), ":")
 			s.Find("td a").Each(func(i int, item *goquery.Selection) {
 				url, _ := item.Attr("href")
-				match := InfoLinkRe.FindStringSubmatch(url)
+				match := infoLinkRe.FindStringSubmatch(url)
 				if len(match) == 3 {
 					itemId, _ := strconv.Atoi(match[2])
 
-					anime.Related[key] = append(anime.Related[key], RelatedItem{
+					anime.Related[key] = append(anime.Related[key], entities.RelatedItem{
 						MalId: itemId,
 						Type:  match[1],
 						Name:  item.Text(),
@@ -309,11 +235,11 @@ func ScrapeAnime(id int) (Anime, error) {
 		anime.Airing = *anime.Status == "Currently Airing"
 
 		// TODO: HUGE CRIMES AHEAD HOW TF DO I CLEAN THIS UP
-		anime.Aired = Aired{
+		anime.Aired = entities.Aired{
 			String: getInfo(darkText, "Aired:"),
-			Prop: AiredProp{
-				From: Date{},
-				To:   Date{},
+			Prop: entities.AiredProp{
+				From: entities.Date{},
+				To:   entities.Date{},
 			},
 		}
 		airedParts := strings.Split(anime.Aired.String, " to ")

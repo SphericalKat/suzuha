@@ -2,21 +2,22 @@ package search
 
 import (
 	"fmt"
-	"github.com/deletescape/toraberu/config"
-	"github.com/deletescape/toraberu/scraper/search"
+	"github.com/deletescape/toraberu/internal/config"
+	"github.com/deletescape/toraberu/pkg/scraper/search"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
+	"net/http"
 	"strconv"
 )
 
 func Anime(ctx *fasthttp.RequestCtx) {
 	if !ctx.QueryArgs().Has("q") {
-		ctx.SetStatusCode(400)
+		ctx.SetStatusCode(http.StatusBadRequest)
 		return
 	}
 	query := string(ctx.QueryArgs().Peek("q"))
 	if len(query) < 3 {
-		ctx.SetStatusCode(400)
+		ctx.SetStatusCode(http.StatusBadRequest)
 		return
 	}
 	page := 1
@@ -24,7 +25,7 @@ func Anime(ctx *fasthttp.RequestCtx) {
 	if ctx.QueryArgs().Has("page") {
 		page, err = strconv.Atoi(string(ctx.QueryArgs().Peek("page")))
 		if err != nil {
-			ctx.SetStatusCode(400)
+			ctx.SetStatusCode(http.StatusBadRequest)
 			return
 		}
 	}
@@ -34,12 +35,12 @@ func Anime(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		animes, err := search.ScrapeAnimeSearch(query, page)
 		if err != nil {
-			ctx.SetStatusCode(500)
+			ctx.SetStatusCode(http.StatusInternalServerError)
 			return
 		}
 		json, err = jettison.Marshal(animes)
 		if err != nil {
-			ctx.SetStatusCode(500)
+			ctx.SetStatusCode(http.StatusInternalServerError)
 			return
 		}
 		go config.Cache.Set(cacheKey, json)

@@ -2,9 +2,10 @@ package search
 
 import (
 	"fmt"
-	"github.com/gocolly/colly"
 	"strconv"
 	"strings"
+
+	"github.com/gocolly/colly"
 )
 
 type Animes struct {
@@ -13,19 +14,19 @@ type Animes struct {
 }
 
 type Anime struct {
-	MalId     int       `json:"mal_id"`
-	Url       string    `json:"url"`
-	ImageUrl  string    `json:"image_url"`
-	Title     string    `json:"title"`
-	Airing    bool      `json:"airing"`
-	Synopsis  string    `json:"synopsis"`
-	Type      string    `json:"type"`
-	Episodes  int       `json:"episodes"`
-	Score     float64   `json:"score"`
+	MalId    int     `json:"mal_id"`
+	Url      string  `json:"url"`
+	ImageUrl string  `json:"image_url"`
+	Title    string  `json:"title"`
+	Airing   bool    `json:"airing"`
+	Synopsis string  `json:"synopsis"`
+	Type     string  `json:"type"`
+	Episodes int     `json:"episodes"`
+	Score    float64 `json:"score"`
 	//StartDate time.Time `json:"start_date"`
 	//EndDate   time.Time `json:"end_date"`
-	Members   int       `json:"members"`
-	Rated     string    `json:"rated"`
+	Members int    `json:"members"`
+	Rated   string `json:"rated"`
 }
 
 func ScrapeAnimeSearch(query string, page int) (Animes, error) {
