@@ -2,9 +2,6 @@ package search
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
-
 	"github.com/deletescape/toraberu/internal/config"
 	"github.com/valyala/fasthttp"
 )
@@ -28,17 +25,13 @@ func Autocomplete(ctx *fasthttp.RequestCtx) {
 	var err error
 	data, err = config.Cache.Get(cacheKey)
 	if err != nil {
-		resp, err := http.Get(fmt.Sprintf("https://myanimelist.net/search/prefix.json?type=%s&keyword=%s&v=1", searchType, query))
-		if err == nil && resp.StatusCode >= 200 && resp.StatusCode < 400 {
-			data, err = ioutil.ReadAll(resp.Body)
-			if err != nil {
-				ctx.SetStatusCode(500)
-				return
-			}
-			config.Cache.Set(cacheKey, data)
+		status := 0
+		status, data, err = fasthttp.Get([]byte{}, fmt.Sprintf("https://myanimelist.net/search/prefix.json?type=%s&keyword=%s&v=1", searchType, query))
+		if err == nil && status >= 200 && status < 400 {
+			_ = config.Cache.Set(cacheKey, data)
 		} else {
-			if resp != nil {
-				ctx.SetStatusCode(resp.StatusCode)
+			if status != 0 {
+				ctx.SetStatusCode(status)
 			} else {
 				ctx.SetStatusCode(500)
 			}
