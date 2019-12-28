@@ -8,11 +8,10 @@ import (
 )
 
 type Scraper struct {
-	client fasthttp.Client
 }
 
 func (s *Scraper) Get(url string) (*goquery.Document, error) {
-	status, body, err := s.client.Get([]byte{}, url)
+	status, body, err := fasthttp.Get(nil, url)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/buaazp/fasthttprouter"
+	"github.com/fasthttp/router"
 	"github.com/deletescape/toraberu/api/anime"
 	"github.com/deletescape/toraberu/api/search"
 	"github.com/deletescape/toraberu/internal/config"
@@ -31,13 +31,13 @@ func main() {
 		StatusUrl:        "https://status.deletescape.cloud/toraberu",
 	})
 
-	router := fasthttprouter.New()
+	mux := router.New()
 
-	router.GET("/", Index)
-	router.GET("/anime/:id", anime.Index)
-	router.GET("/search/autocomplete", search.Autocomplete)
-	router.GET("/search/anime", search.Anime)
+	mux.GET("/", Index)
+	mux.GET("/anime/:id", anime.Index)
+	mux.GET("/search/autocomplete", search.Autocomplete)
+	mux.GET("/search/anime", search.Anime)
 
 	log.Println("Starting toraberu")
-	log.Fatal(fasthttp.ListenAndServe(":8081", router.Handler))
+	log.Fatal(fasthttp.ListenAndServe(":8081", mux.Handler))
 }
