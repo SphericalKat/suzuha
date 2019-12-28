@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/fasthttp/router"
 	"github.com/deletescape/toraberu/api/anime"
 	"github.com/deletescape/toraberu/api/search"
 	"github.com/deletescape/toraberu/internal/config"
 	"github.com/deletescape/toraberu/pkg/entities"
+	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
 	"log"
@@ -32,6 +32,10 @@ func main() {
 	})
 
 	mux := router.New()
+	mux.PanicHandler = func(ctx *fasthttp.RequestCtx, i interface{}) {
+		ctx.SetStatusCode(500)
+		log.Println("PANIC:", i)
+	}
 
 	mux.GET("/", Index)
 	mux.GET("/anime/:id", anime.Index)
