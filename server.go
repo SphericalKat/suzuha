@@ -12,10 +12,15 @@ import (
 )
 
 var indexInfo []byte
+var alive = []byte("OK")
 
 func Index(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentTypeBytes(config.JSONContentType)
 	_, _ = ctx.Write(indexInfo)
+}
+
+func Alive(ctx *fasthttp.RequestCtx) {
+	_, _ = ctx.Write(alive)
 }
 
 func main() {
@@ -38,6 +43,7 @@ func main() {
 	}
 
 	mux.GET("/", Index)
+	mux.GET("/alive", Alive)
 	mux.GET("/anime/:id", anime.Index)
 	mux.GET("/search/autocomplete", search.Autocomplete)
 	mux.GET("/search/anime", search.Anime)
