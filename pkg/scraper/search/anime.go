@@ -35,18 +35,30 @@ var scraper scrp.Scraper
 
 func ScrapeAnimeSearch(query string, page int) (*Animes, error) {
 	searchUrl := fmt.Sprintf("https://myanimelist.net/anime.php?q=%s&show=%d&c[]=a&c[]=b&c[]=c&c[]=d&c[]=e&c[]=f&c[]=g", query, (page-1)*50)
-	sel, err := scraper.GetSelection(searchUrl, ".js-block-list tr")
+	sel, err := scraper.GetSelection(searchUrl, "#content")
 	if err != nil {
 		return nil, err
 	}
 
-	count := len(sel.Nodes) - 1
+	trs := sel.Find(".js-block-list tr")
+	count := len(trs.Nodes) - 1
 	animes := Animes{
 		Results: make([]*Anime, count),
 	}
 	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		lastPage := sel.Find(".normal_header.pt16 span a:last-of-type").Text()
+		if lastPage == "" {
+			animes.LastPage = 1
+		} else {
+			animes.LastPage, _ = strconv.Atoi(lastPage)
+		}
+	}()
+
 	wg.Add(count)
-	sel.Each(func(i int, tr *goquery.Selection) {
+	trs.Each(func(i int, tr *goquery.Selection) {
 		if i == 0 {
 			return
 		}
