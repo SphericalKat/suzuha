@@ -2,7 +2,7 @@ package search
 
 import (
 	"fmt"
-	"github.com/deletescape/toraberu/internal/config"
+	"github.com/deletescape/suzuha/internal/config"
 	"github.com/valyala/fasthttp"
 )
 

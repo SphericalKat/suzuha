@@ -4,7 +4,7 @@ type IndexInfo struct {
 	Author           string
 	Telegram         string
 	Version          string
-	ToraberuGo       string
+	SuzuhaGo       string
 	Website          string
 	Docs             string
 	GitHub           string

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/deletescape/toraberu/api/anime"
-	"github.com/deletescape/toraberu/api/search"
-	"github.com/deletescape/toraberu/api/season"
-	"github.com/deletescape/toraberu/internal/config"
-	"github.com/deletescape/toraberu/pkg/entities"
+	"github.com/deletescape/suzuha/api/anime"
+	"github.com/deletescape/suzuha/api/search"
+	"github.com/deletescape/suzuha/api/season"
+	"github.com/deletescape/suzuha/internal/config"
+	"github.com/deletescape/suzuha/pkg/entities"
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
@@ -29,12 +29,12 @@ func main() {
 		Author:           "@deletescape",
 		Telegram:         "t.me/noneyet",
 		Version:          "0.0.1",
-		ToraberuGo:       "0.0.1",
-		Website:          "toraberu.deletescape.ch",
-		Docs:             "toraberu.deletescape.ch/docs",
-		GitHub:           "https://github.com/deletescape/toraberu",
-		ProductionApiUrl: "https://toraberu.deletescape.cloud/api",
-		StatusUrl:        "https://status.deletescape.cloud/toraberu",
+		SuzuhaGo:       "0.0.1",
+		Website:          "suzuha.deletescape.ch",
+		Docs:             "suzuha.deletescape.ch/docs",
+		GitHub:           "https://github.com/deletescape/suzuha",
+		ProductionApiUrl: "https://suzuha.deletescape.cloud/api",
+		StatusUrl:        "https://status.deletescape.cloud/suzuha",
 	})
 
 	mux := router.New()
@@ -50,6 +50,6 @@ func main() {
 	mux.GET("/search/anime", search.Anime)
 	mux.GET("/season/:year?/:season?", season.Season)
 
-	log.Println("Starting toraberu")
+	log.Println("Starting suzuha")
 	log.Fatal(fasthttp.ListenAndServe(":8081", mux.Handler))
 }

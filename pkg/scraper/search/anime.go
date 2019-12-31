@@ -3,7 +3,7 @@ package search
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	scrp "github.com/deletescape/toraberu/pkg/scraper"
+	scrp "github.com/deletescape/suzuha/pkg/scraper"
 	"strconv"
 	"strings"
 	"sync"

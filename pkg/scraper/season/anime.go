@@ -3,8 +3,8 @@ package season
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/deletescape/toraberu/pkg/entities"
-	scrp "github.com/deletescape/toraberu/pkg/scraper"
+	"github.com/deletescape/suzuha/pkg/entities"
+	scrp "github.com/deletescape/suzuha/pkg/scraper"
 	"strconv"
 	"strings"
 	"sync"

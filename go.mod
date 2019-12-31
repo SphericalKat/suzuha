@@ -1,4 +1,4 @@
-module github.com/deletescape/toraberu
+module github.com/deletescape/suzuha
 
 go 1.13
 

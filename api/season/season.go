@@ -2,8 +2,8 @@ package season
 
 import (
 	"fmt"
-	"github.com/deletescape/toraberu/internal/config"
-	"github.com/deletescape/toraberu/pkg/scraper/season"
+	"github.com/deletescape/suzuha/internal/config"
+	"github.com/deletescape/suzuha/pkg/scraper/season"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
 	"net/http"

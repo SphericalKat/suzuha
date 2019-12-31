@@ -2,8 +2,8 @@ package search
 
 import (
 	"fmt"
-	"github.com/deletescape/toraberu/internal/config"
-	"github.com/deletescape/toraberu/pkg/scraper/search"
+	"github.com/deletescape/suzuha/internal/config"
+	"github.com/deletescape/suzuha/pkg/scraper/search"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
 	"net/http"
