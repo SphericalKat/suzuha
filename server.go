@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/deletescape/toraberu/api/anime"
 	"github.com/deletescape/toraberu/api/search"
+	"github.com/deletescape/toraberu/api/season"
 	"github.com/deletescape/toraberu/internal/config"
 	"github.com/deletescape/toraberu/pkg/entities"
 	"github.com/fasthttp/router"
@@ -47,6 +48,7 @@ func main() {
 	mux.GET("/anime/:id", anime.Index)
 	mux.GET("/search/autocomplete", search.Autocomplete)
 	mux.GET("/search/anime", search.Anime)
+	mux.GET("/season/:year?/:season?", season.Season)
 
 	log.Println("Starting toraberu")
 	log.Fatal(fasthttp.ListenAndServe(":8081", mux.Handler))

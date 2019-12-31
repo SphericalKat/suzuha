@@ -201,7 +201,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
 				if err == nil {
-					anime.Studios = append(anime.Studios, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
+					anime.Studios = append(anime.Studios, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
 			}
 		})
@@ -216,7 +216,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
 				if err == nil {
-					anime.Licensors = append(anime.Licensors, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
+					anime.Licensors = append(anime.Licensors, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
 			}
 		})
@@ -231,7 +231,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
 				if err == nil {
-					anime.Producers = append(anime.Producers, entities.Studio{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
+					anime.Producers = append(anime.Producers, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
 			}
 		})
@@ -246,7 +246,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
 				if err == nil {
-					anime.Genres = append(anime.Genres, entities.Genre{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
+					anime.Genres = append(anime.Genres, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
 			}
 		})
@@ -272,7 +272,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		anime.Related = map[string][]entities.RelatedItem{}
+		anime.Related = map[string][]entities.MalEntity{}
 		sel.Find(".anime_detail_related_anime tr").Each(func(i int, s *goquery.Selection) {
 			key := strings.TrimSuffix(s.Find("td").First().Text(), ":")
 			s.Find("td a").Each(func(i int, item *goquery.Selection) {
@@ -282,7 +282,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 					itemId, _ := strconv.Atoi(match[2])
 					absolute, err := requestedUrl.Parse(url)
 					if err == nil {
-						anime.Related[key] = append(anime.Related[key], entities.RelatedItem{
+						anime.Related[key] = append(anime.Related[key], entities.MalEntity{
 							MalId: itemId,
 							Type:  match[1],
 							Name:  item.Text(),

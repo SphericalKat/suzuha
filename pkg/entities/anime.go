@@ -25,13 +25,13 @@ type Anime struct {
 	Aired         Aired                    `json:"aired"`
 	Background    *string                  `json:"background"`
 	EndingThemes  []string                 `json:"ending_themes"`
-	Genres        []Genre                  `json:"genres"`
-	Licensors     []Studio                 `json:"licensors"`
+	Genres        []MalEntity              `json:"genres"`
+	Licensors     []MalEntity                 `json:"licensors"`
 	OpeningThemes []string                 `json:"opening_themes"`
 	Premiered     *string                  `json:"premiered"`
-	Producers     []Studio                 `json:"producers"`
-	Related       map[string][]RelatedItem `json:"related"`
+	Producers     []MalEntity                 `json:"producers"`
+	Related       map[string][]MalEntity `json:"related"`
 	Source        *string                  `json:"source"`
 	Status        *string                  `json:"status"`
-	Studios       []Studio                 `json:"studios"`
+	Studios       []MalEntity                 `json:"studios"`
 }
