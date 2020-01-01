@@ -3,6 +3,7 @@ package anime
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/deletescape/suzuha/internal/config"
 	"github.com/deletescape/suzuha/pkg/entities"
 	scrp "github.com/deletescape/suzuha/pkg/scraper"
 	"net/url"
@@ -39,7 +40,6 @@ func cleanYtUrl(url string) string {
 
 var scraper scrp.Scraper
 var ytLinkRe = regexp.MustCompile(`https?://(?:www\.)?youtube\.com/embed/([\w-]+).*`)
-var infoLinkRe = regexp.MustCompile(`/(\w+)/(?:\w+/)?(\d+)/.*`)
 
 func ScrapeAnime(id int) (*entities.Anime, error) {
 	anime := entities.Anime{MalId: &id}
@@ -196,7 +196,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		defer wg.Done()
 		getInfoLinks(darkText, "Studios:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := infoLinkRe.FindStringSubmatch(url)
+			match := config.InfoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
@@ -211,7 +211,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		defer wg.Done()
 		getInfoLinks(darkText, "Licensors:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := infoLinkRe.FindStringSubmatch(url)
+			match := config.InfoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
@@ -226,7 +226,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		defer wg.Done()
 		getInfoLinks(darkText, "Producers:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := infoLinkRe.FindStringSubmatch(url)
+			match := config.InfoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
@@ -241,7 +241,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		defer wg.Done()
 		getInfoLinks(darkText, "Genres:").Each(func(i int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
-			match := infoLinkRe.FindStringSubmatch(url)
+			match := config.InfoLinkRe.FindStringSubmatch(url)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
 				absolute, err := requestedUrl.Parse(url)
@@ -277,7 +277,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 			key := strings.TrimSuffix(s.Find("td").First().Text(), ":")
 			s.Find("td a").Each(func(i int, item *goquery.Selection) {
 				url, _ := item.Attr("href")
-				match := infoLinkRe.FindStringSubmatch(url)
+				match := config.InfoLinkRe.FindStringSubmatch(url)
 				if len(match) == 3 {
 					itemId, _ := strconv.Atoi(match[2])
 					absolute, err := requestedUrl.Parse(url)
