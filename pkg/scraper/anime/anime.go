@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/deletescape/suzuha/internal/config"
+	"github.com/deletescape/suzuha/internal/utils"
 	"github.com/deletescape/suzuha/pkg/entities"
 	scrp "github.com/deletescape/suzuha/pkg/scraper"
 	"net/url"
@@ -14,21 +15,7 @@ import (
 	"time"
 )
 
-func getInfo(selection *goquery.Selection, info string) string {
-	it := selection.FilterFunction(func(i int, s *goquery.Selection) bool {
-		return s.Text() == info
-	})
-	parent := it.Parent()
-	it.Remove()
-	return strings.TrimSpace(parent.Text())
-}
 
-func getInfoLinks(selection *goquery.Selection, info string) *goquery.Selection {
-	it := selection.FilterFunction(func(i int, s *goquery.Selection) bool {
-		return s.Text() == info
-	})
-	return it.SiblingsFiltered("a")
-}
 
 func cleanYtUrl(url string) string {
 	match := ytLinkRe.FindStringSubmatch(url)
@@ -65,15 +52,15 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		if title != "" {
 			anime.Title = &title
 		}
-		titleEnglish := getInfo(darkText, "English:")
+		titleEnglish := utils.GetInfo(darkText, "English:")
 		if titleEnglish != "" {
 			anime.TitleEnglish = &titleEnglish
 		}
-		titleJapanese := getInfo(darkText, "Japanese:")
+		titleJapanese := utils.GetInfo(darkText, "Japanese:")
 		if titleJapanese != "" {
 			anime.TitleJapanese = &titleJapanese
 		}
-		synonyms := getInfo(darkText, "Synonyms:")
+		synonyms := utils.GetInfo(darkText, "Synonyms:")
 		if synonyms != "" {
 			anime.TitleSynonyms = strings.Split(synonyms, ", ")
 		}
@@ -81,11 +68,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		atype := getInfo(darkText, "Type:")
+		atype := utils.GetInfo(darkText, "Type:")
 		if atype != "" {
 			anime.Type = &atype
 		}
-		episodes, err := strconv.Atoi(getInfo(darkText, "Episodes:"))
+		episodes, err := strconv.Atoi(utils.GetInfo(darkText, "Episodes:"))
 		if err == nil {
 			anime.Episodes = &episodes
 		} else {
@@ -95,19 +82,19 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		rating := getInfo(darkText, "Rating:")
+		rating := utils.GetInfo(darkText, "Rating:")
 		if rating != "" {
 			anime.Rating = &rating
 		}
-		duration := getInfo(darkText, "Duration:")
+		duration := utils.GetInfo(darkText, "Duration:")
 		if duration != "" {
 			anime.Duration = &duration
 		}
-		source := getInfo(darkText, "Source:")
+		source := utils.GetInfo(darkText, "Source:")
 		if source != "" {
 			anime.Source = &source
 		}
-		broadcast := getInfo(darkText, "Broadcast:")
+		broadcast := utils.GetInfo(darkText, "Broadcast:")
 		if broadcast != "" {
 			anime.Broadcast = &broadcast
 		}
@@ -115,11 +102,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		premiered := getInfo(darkText, "Premiered:")
+		premiered := utils.GetInfo(darkText, "Premiered:")
 		if premiered != "" {
 			anime.Premiered = &premiered
 		}
-		status := getInfo(darkText, "Status:")
+		status := utils.GetInfo(darkText, "Status:")
 		if status != "" {
 			anime.Status = &status
 			anime.Airing = status == "Currently Airing"
@@ -138,7 +125,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		} else {
 			fmt.Println(err)
 		}
-		popularity, err := strconv.Atoi(strings.TrimPrefix(getInfo(darkText, "Popularity:"), "#"))
+		popularity, err := strconv.Atoi(strings.TrimPrefix(utils.GetInfo(darkText, "Popularity:"), "#"))
 		if err == nil {
 			anime.Popularity = &popularity
 		} else {
@@ -154,13 +141,13 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		members, err := strconv.Atoi(strings.ReplaceAll(getInfo(darkText, "Members:"), ",", ""))
+		members, err := strconv.Atoi(strings.ReplaceAll(utils.GetInfo(darkText, "Members:"), ",", ""))
 		if err == nil {
 			anime.Members = &members
 		} else {
 			fmt.Println(err)
 		}
-		favorites, err := strconv.Atoi(strings.ReplaceAll(getInfo(darkText, "Favorites:"), ",", ""))
+		favorites, err := strconv.Atoi(strings.ReplaceAll(utils.GetInfo(darkText, "Favorites:"), ",", ""))
 		if err == nil {
 			anime.Favorites = &favorites
 		} else {
@@ -194,7 +181,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		getInfoLinks(darkText, "Studios:").Each(func(i int, s *goquery.Selection) {
+		utils.GetInfoLinks(darkText, "Studios:").Each(func(i int, s *goquery.Selection) {
 			URL, _ := s.Attr("href")
 			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
@@ -209,7 +196,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		getInfoLinks(darkText, "Licensors:").Each(func(i int, s *goquery.Selection) {
+		utils.GetInfoLinks(darkText, "Licensors:").Each(func(i int, s *goquery.Selection) {
 			URL, _ := s.Attr("href")
 			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
@@ -224,7 +211,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		getInfoLinks(darkText, "Producers:").Each(func(i int, s *goquery.Selection) {
+		utils.GetInfoLinks(darkText, "Producers:").Each(func(i int, s *goquery.Selection) {
 			URL, _ := s.Attr("href")
 			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
@@ -239,7 +226,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		getInfoLinks(darkText, "Genres:").Each(func(i int, s *goquery.Selection) {
+		utils.GetInfoLinks(darkText, "Genres:").Each(func(i int, s *goquery.Selection) {
 			URL, _ := s.Attr("href")
 			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
@@ -316,7 +303,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	go func() {
 		defer wg.Done()
 		anime.Aired = entities.Aired{
-			String: getInfo(darkText, "Aired:"),
+			String: utils.GetInfo(darkText, "Aired:"),
 		}
 		airedParts := strings.Split(anime.Aired.String, " to ")
 		tmpFrom, err := time.Parse("Jan _2, 2006", airedParts[0])
