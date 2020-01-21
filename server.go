@@ -7,9 +7,11 @@ import (
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 	"log"
+	"net/http"
 )
 
-const indexString  = "Suzuha v0.1\ngithub.com/deletescape/suzuha"
+const indexString = "Suzuha v0.1\ngithub.com/deletescape/suzuha"
+
 var indexBytes = []byte(indexString)
 var ok = []byte{'O', 'K'}
 
@@ -24,7 +26,7 @@ func Alive(ctx *fasthttp.RequestCtx) {
 func main() {
 	mux := router.New()
 	mux.PanicHandler = func(ctx *fasthttp.RequestCtx, i interface{}) {
-		ctx.SetStatusCode(500)
+		ctx.SetStatusCode(http.StatusInternalServerError)
 		log.Println("PANIC:", i)
 	}
 

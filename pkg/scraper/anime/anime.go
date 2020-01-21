@@ -195,11 +195,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	go func() {
 		defer wg.Done()
 		getInfoLinks(darkText, "Studios:").Each(func(i int, s *goquery.Selection) {
-			url, _ := s.Attr("href")
-			match := config.InfoLinkRe.FindStringSubmatch(url)
+			URL, _ := s.Attr("href")
+			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
-				absolute, err := requestedUrl.Parse(url)
+				absolute, err := requestedUrl.Parse(URL)
 				if err == nil {
 					anime.Studios = append(anime.Studios, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
@@ -210,11 +210,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	go func() {
 		defer wg.Done()
 		getInfoLinks(darkText, "Licensors:").Each(func(i int, s *goquery.Selection) {
-			url, _ := s.Attr("href")
-			match := config.InfoLinkRe.FindStringSubmatch(url)
+			URL, _ := s.Attr("href")
+			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
-				absolute, err := requestedUrl.Parse(url)
+				absolute, err := requestedUrl.Parse(URL)
 				if err == nil {
 					anime.Licensors = append(anime.Licensors, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
@@ -225,11 +225,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	go func() {
 		defer wg.Done()
 		getInfoLinks(darkText, "Producers:").Each(func(i int, s *goquery.Selection) {
-			url, _ := s.Attr("href")
-			match := config.InfoLinkRe.FindStringSubmatch(url)
+			URL, _ := s.Attr("href")
+			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
-				absolute, err := requestedUrl.Parse(url)
+				absolute, err := requestedUrl.Parse(URL)
 				if err == nil {
 					anime.Producers = append(anime.Producers, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
@@ -240,11 +240,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	go func() {
 		defer wg.Done()
 		getInfoLinks(darkText, "Genres:").Each(func(i int, s *goquery.Selection) {
-			url, _ := s.Attr("href")
-			match := config.InfoLinkRe.FindStringSubmatch(url)
+			URL, _ := s.Attr("href")
+			match := config.InfoLinkRe.FindStringSubmatch(URL)
 			if len(match) == 3 {
 				studioId, _ := strconv.Atoi(match[2])
-				absolute, err := requestedUrl.Parse(url)
+				absolute, err := requestedUrl.Parse(URL)
 				if err == nil {
 					anime.Genres = append(anime.Genres, entities.MalEntity{MalId: studioId, Type: match[1], Name: s.Text(), Url: absolute.String()})
 				}
@@ -254,7 +254,7 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		sel.Find(".theme-songs.opnening .theme-song").Each(func(i int, s *goquery.Selection) {
+		sel.Find(".theme-songs.opnening .theme-song").Each(func(i int, s *goquery.Selection) { // this is not a typo
 			text := s.Text()
 			if strings.HasPrefix(text, "#") {
 				text = strings.SplitAfterN(text, ": ", 2)[1]
@@ -276,11 +276,11 @@ func ScrapeAnime(id int) (*entities.Anime, error) {
 		sel.Find(".anime_detail_related_anime tr").Each(func(i int, s *goquery.Selection) {
 			key := strings.TrimSuffix(s.Find("td").First().Text(), ":")
 			s.Find("td a").Each(func(i int, item *goquery.Selection) {
-				url, _ := item.Attr("href")
-				match := config.InfoLinkRe.FindStringSubmatch(url)
+				URL, _ := item.Attr("href")
+				match := config.InfoLinkRe.FindStringSubmatch(URL)
 				if len(match) == 3 {
 					itemId, _ := strconv.Atoi(match[2])
-					absolute, err := requestedUrl.Parse(url)
+					absolute, err := requestedUrl.Parse(URL)
 					if err == nil {
 						anime.Related[key] = append(anime.Related[key], entities.MalEntity{
 							MalId: itemId,
