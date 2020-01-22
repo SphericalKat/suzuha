@@ -8,6 +8,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"log"
 	"net/http"
+	"os"
 )
 
 const indexString = "Suzuha v0.1\ngithub.com/deletescape/suzuha"
@@ -30,12 +31,14 @@ func main() {
 		log.Println("PANIC:", i)
 	}
 
-	mux.GET("/", Index)
-	mux.GET("/alive", Alive)
-	mux.GET("/anime/:id", anime.Index)
-	mux.GET("/search/autocomplete", search.Autocomplete)
-	mux.GET("/search/anime", search.Anime)
-	mux.GET("/season/:year?/:season?", season.Season)
+	base := os.Getenv("BASE_PATH")
+
+	mux.GET(base+"/", Index)
+	mux.GET(base+"/alive", Alive)
+	mux.GET(base+"/anime/:id", anime.Index)
+	mux.GET(base+"/search/autocomplete", search.Autocomplete)
+	mux.GET(base+"/search/anime", search.Anime)
+	mux.GET(base+"/season/:year?/:season?", season.Season)
 
 	log.Println("Starting suzuha")
 	log.Fatal(fasthttp.ListenAndServe(":8081", mux.Handler))
