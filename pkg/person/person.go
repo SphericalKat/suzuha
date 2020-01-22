@@ -18,6 +18,7 @@ type Person struct {
 	GivenName      *string  `json:"given_name"`
 	FamilyName     *string  `json:"family_name"`
 	About          *string  `json:"about"`
+	MalID          *int     `json:"mal_id"`
 	MemberFaves    *int     `json:"member_favorites"`
 	AlternateNames []string `json:"alternate_names"`
 }
@@ -25,7 +26,7 @@ type Person struct {
 var scraper scrp.Scraper
 
 func ScrapePerson(id int) (*Person, error) {
-	person := &Person{}
+	person := &Person{MalID: &id}
 	requested := fmt.Sprintf("https://myanimelist.net/people/%d", id)
 	sel, err := scraper.GetSelection(requested, "div#contentWrapper")
 	if err != nil {
@@ -67,11 +68,11 @@ func ScrapePerson(id int) (*Person, error) {
 		altNames := strings.Split(utils.GetInfo(darkText, "Alternate names:"), ", ")
 		darkText.Each(func(i int, s *goquery.Selection) {
 			if s.Text() == "Family name:" {
-				familyName = s.Nodes[0].NextSibling.Data
+				familyName = strings.Trim(s.Nodes[0].NextSibling.Data, " ")
 			}
 		})
 
-		if websiteURL != "" {
+		if websiteURL != "" && websiteURL != "http://" && websiteURL != "https://" {
 			person.WebsiteURL = &websiteURL
 		}
 		if givenName != "" {
