@@ -2,12 +2,13 @@ package search
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/deletescape/suzuha/internal/config"
 	"github.com/deletescape/suzuha/pkg/scraper/search"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
-	"net/http"
-	"strconv"
 )
 
 func Anime(ctx *fasthttp.RequestCtx) {
@@ -45,6 +46,6 @@ func Anime(ctx *fasthttp.RequestCtx) {
 		}
 		go config.Cache.Set(cacheKey, json)
 	}
-	ctx.Write(json)
+	_, _ = ctx.Write(json)
 	ctx.SetContentTypeBytes(config.JSONContentType)
 }

@@ -2,12 +2,13 @@ package person
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/deletescape/suzuha/api/views"
 	"github.com/deletescape/suzuha/internal/config"
-	"github.com/deletescape/suzuha/pkg/person"
+	"github.com/deletescape/suzuha/pkg/scraper/person"
 	"github.com/valyala/fasthttp"
 	"github.com/wI2L/jettison"
-	"strconv"
 )
 
 func Index(ctx *fasthttp.RequestCtx) {
